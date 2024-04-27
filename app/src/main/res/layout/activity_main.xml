@@ -44,7 +44,7 @@
         android:text="Embark on unforgettable trips where every booking leads to new adventures"
         android:gravity="center"
         android:textSize="18dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="180dp"
         android:paddingVertical="10dp"/>
 
     <Button
@@ -58,7 +58,7 @@
         android:textSize="17dp"
         android:layout_marginLeft="40dp"
         android:layout_marginRight="40dp"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="50dp"
         android:padding="20dp"/>
 
     <LinearLayout
