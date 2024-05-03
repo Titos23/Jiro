@@ -49,6 +49,7 @@
 
     <Button
         android:layout_width="match_parent"
+        android:id="@+id/startbutton"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
         android:backgroundTint="#005C5F"

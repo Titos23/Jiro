@@ -1,0 +1,7 @@
+<resources>
+    <!-- Define the custom height for the spinner dropdown items -->
+    <dimen name="custom_spinner_dropdown_item_height">100dp</dimen>
+    <!-- res/values/dimens.xml -->
+    <dimen name="spinner_item_height">48dp</dimen>
+
+</resources>

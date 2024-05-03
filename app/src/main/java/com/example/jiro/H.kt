@@ -1,3 +1,5 @@
+/*
+
 package com.example.jiro
 
 import android.annotation.SuppressLint
@@ -148,3 +150,4 @@ class MainActivity2 : AppCompatActivity() {
     }
 }
 
+*/
