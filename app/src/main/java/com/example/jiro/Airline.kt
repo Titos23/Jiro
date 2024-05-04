@@ -11,3 +11,4 @@ class Airline(val name: String, val iataCode: String, val mainHub: String) {
         flights.remove(flight)
     }
 }
+

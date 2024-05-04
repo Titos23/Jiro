@@ -3,6 +3,7 @@ package com.example.jiro
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -14,11 +15,17 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import java.util.Calendar
 import java.util.Locale
-import android.util.Xml;
-import org.xmlpull.v1.XmlPullParser;
 import android.content.res.XmlResourceParser
+import org.xmlpull.v1.XmlPullParser
 
 class MainActivity2 : AppCompatActivity() {
+
+    private lateinit var departureSpinner: Spinner
+    private lateinit var arrivalSpinner: Spinner
+    private var selectedDeparture: Airport? = null
+    private var selectedArrival: Airport? = null
+    private lateinit var listItems: List<Airport>
+
     @SuppressLint("CutPasteId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,21 +35,15 @@ class MainActivity2 : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
-
-
-
-
         }
 
-        val departureSpinner: Spinner = findViewById(R.id.departure)
-        val arrivalSpinner: Spinner = findViewById(R.id.arrival)
-        val listItems = parseXML() // Parsing XML data
+        departureSpinner = findViewById(R.id.departure)
+        arrivalSpinner = findViewById(R.id.arrival)
+        listItems = parseXML() // Parsing XML data
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, listItems)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         departureSpinner.adapter = adapter
         arrivalSpinner.adapter = adapter
-
-
 
         setCurrentDateOnView()
         val tvSelectDate = findViewById<TextView>(R.id.tvSelectDate)
@@ -50,25 +51,41 @@ class MainActivity2 : AppCompatActivity() {
             showDatePickerDialog()
         }
 
-        val optionSpinner: Spinner = findViewById(R.id.classcat)
-        ArrayAdapter.createFromResource(
-            this,
-            R.array.options_array,
-            android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            optionSpinner.adapter = adapter
-        }
-
-        optionSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        val spinnerListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                // Handle item selection
+                val selectedAirport = parent.adapter.getItem(position) as Airport
+                if (parent.id == R.id.departure) {
+                    selectedDeparture = selectedAirport
+                } else if (parent.id == R.id.arrival) {
+                    selectedArrival = selectedAirport
+                }
+                updateRandomAirports()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
-                // Handle no item selection
+                if (parent.id == R.id.departure) {
+                    selectedDeparture = null
+                } else if (parent.id == R.id.arrival) {
+                    selectedArrival = null
+                }
+                updateRandomAirports()
             }
         }
+
+        departureSpinner.onItemSelectedListener = spinnerListener
+        arrivalSpinner.onItemSelectedListener = spinnerListener
+    }
+
+    private fun updateRandomAirports() {
+        // Ensure both selections have been made to avoid premature random selections.
+        if (selectedDeparture == null || selectedArrival == null) {
+            return
+        }
+
+        val excludedAirports = listOfNotNull(selectedDeparture, selectedArrival)
+        val availableAirports = listItems.filter { it !in excludedAirports }
+        val randomAirports = availableAirports.shuffled().take(3)
+        Log.d("RandomAirports", "Random Airports: ${randomAirports.joinToString { it.name }}")
     }
 
     private fun setCurrentDateOnView() {
@@ -104,7 +121,6 @@ class MainActivity2 : AppCompatActivity() {
             findViewById<TextView>(R.id.tvSelectDate).text = selectedDate
         }, year, month, day)
 
-        // Optionally set a date range
         datePickerDialog.datePicker.minDate = calendar.timeInMillis
         // Set maximum date to one year from today
         calendar.add(Calendar.YEAR, 1)
@@ -113,9 +129,9 @@ class MainActivity2 : AppCompatActivity() {
         datePickerDialog.show()
     }
 
-    private fun parseXML(): List<String> {
-        val parser: XmlResourceParser = resources.getXml(R.xml.airports) // 'airports.xml' is the name of your XML file
-        val items = mutableListOf<String>()
+    private fun parseXML(): List<Airport> {
+        val parser: XmlResourceParser = resources.getXml(R.xml.airports)
+        val items = mutableListOf<Airport>()
         try {
             var eventType = parser.eventType
             while (eventType != XmlPullParser.END_DOCUMENT) {
@@ -134,7 +150,7 @@ class MainActivity2 : AppCompatActivity() {
                         eventType = parser.next()
                     }
                     if (name != null && code != null && countryName != null) {
-                        items.add("$name, $code, $countryName")
+                        items.add(Airport(name, code, countryName))
                     }
                 }
                 eventType = parser.next()
@@ -147,4 +163,3 @@ class MainActivity2 : AppCompatActivity() {
         return items
     }
 }
-
