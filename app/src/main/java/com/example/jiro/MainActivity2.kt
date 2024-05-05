@@ -2,6 +2,7 @@ package com.example.jiro
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -30,7 +31,6 @@ class MainActivity2 : AppCompatActivity() {
     private lateinit var listItems: List<Airport>
     private lateinit var layoutContainer: LinearLayout
     private lateinit var selectedDate: String  // For formatted date in the flight info section
-    private lateinit var displayDate: String  // For display in TextView from DatePicker
 
     @SuppressLint("CutPasteId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,53 +65,52 @@ class MainActivity2 : AppCompatActivity() {
         departureSpinner.adapter = adapter
         arrivalSpinner.adapter = adapter
 
-        departureSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        val spinnerListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                selectedDeparture = parent.getItemAtPosition(position) as Airport
+                if (parent.id == R.id.departure) {
+                    selectedDeparture = parent.getItemAtPosition(position) as Airport
+                } else if (parent.id == R.id.arrival) {
+                    selectedArrival = parent.getItemAtPosition(position) as Airport
+                }
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                selectedDeparture = null
-            }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
-        arrivalSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                selectedArrival = parent.getItemAtPosition(position) as Airport
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                selectedArrival = null
-            }
-        }
+        departureSpinner.onItemSelectedListener = spinnerListener
+        arrivalSpinner.onItemSelectedListener = spinnerListener
     }
 
     private fun addFlightInfoView() {
-        val inflater = LayoutInflater.from(this)
         layoutContainer.removeAllViews()  // Clear previous views
-        val view1 = inflater.inflate(R.layout.flight_info_section, layoutContainer, false)
-        setupFlightInfoView(view1, false)
-
-        val view2 = inflater.inflate(R.layout.flight_info_section, layoutContainer, false)
-        setupFlightInfoView(view2, true)
-
-        layoutContainer.addView(view1)
-        layoutContainer.addView(view2)
+        addFlightDetailsView(includeRandomAirport = false, price = 500)  // More expensive without random airport
+        addFlightDetailsView(includeRandomAirport = true, price = 300)   // Less expensive with random airport
     }
 
-    private fun setupFlightInfoView(view: View, includeRandomAirport: Boolean) {
+    private fun addFlightDetailsView(includeRandomAirport: Boolean, price: Int) {
+        val inflater = LayoutInflater.from(this)
+        val view = inflater.inflate(R.layout.flight_info_section, layoutContainer, false)
+
         view.findViewById<TextView>(R.id.textViewDepartureCity).text = selectedDeparture?.name ?: "Default Departure"
         view.findViewById<TextView>(R.id.textViewDepartureCode).text = selectedDeparture?.iataCode ?: "AAA"
         view.findViewById<TextView>(R.id.textViewArrivalCity).text = selectedArrival?.name ?: "Default Arrival"
         view.findViewById<TextView>(R.id.textViewArrivalCode).text = selectedArrival?.iataCode ?: "AMS"
         view.findViewById<TextView>(R.id.textViewDate).text = selectedDate
+        view.findViewById<TextView>(R.id.textViewPrice).text = "Price: $$price"
 
+        var randomAirport: Airport? = null
         if (includeRandomAirport) {
-            val randomAirport = getRandomAirport()
+            randomAirport = getRandomAirport()
             randomAirport?.let {
-                view.findViewById<TextView>(R.id.textViewDate).text = "${it.name} (${it.country})"
+                view.findViewById<TextView>(R.id.textViewDate).text = "Random Stop: ${it.name} (${it.country})"
             }
         }
+
+        view.findViewById<Button>(R.id.proceedToPaymentButton).setOnClickListener {
+            proceedToPayment(selectedDeparture, selectedArrival, price, randomAirport)
+        }
+
+        layoutContainer.addView(view)
     }
 
     private fun getRandomAirport(): Airport? {
@@ -122,13 +121,11 @@ class MainActivity2 : AppCompatActivity() {
     private fun showDatePickerDialog() {
         val calendar = Calendar.getInstance()
         DatePickerDialog(this, { _, year, month, dayOfMonth ->
-            val date = Calendar.getInstance()
-            date.set(year, month, dayOfMonth)
-            val dateFormatter = SimpleDateFormat("EEEE, dd MMMM yyyy", Locale.getDefault())
+            calendar.set(year, month, dayOfMonth)
+            val sdf = SimpleDateFormat("EEEE, dd MMMM yyyy", Locale.getDefault())
             val dateFlightFormatter = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
-            displayDate = dateFormatter.format(date.time)
-            selectedDate = dateFlightFormatter.format(date.time)
-            findViewById<TextView>(R.id.tvSelectDate).text = displayDate
+            selectedDate = dateFlightFormatter.format(calendar.time)
+            findViewById<TextView>(R.id.tvSelectDate).text = sdf.format(calendar.time)
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
     }
 
@@ -152,8 +149,8 @@ class MainActivity2 : AppCompatActivity() {
                         }
                         eventType = parser.next()
                     }
-                    if (name != null && code != null && countryName != null) {
-                        items.add(Airport(name, code, countryName))
+                    if (name != null) {
+                        items.add(Airport(name, code.toString(), countryName.toString()))
                     }
                 }
                 eventType = parser.next()
@@ -172,5 +169,17 @@ class MainActivity2 : AppCompatActivity() {
         val dateFormatter = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
         selectedDate = dateFormatter.format(currentDate.time)
         findViewById<TextView>(R.id.tvSelectDate).text = selectedDate
+    }
+
+    private fun proceedToPayment(departure: Airport?, arrival: Airport?, price: Int, randomAirport: Airport?) {
+        val intent = Intent(this, PaymentActivity::class.java).apply {
+            putExtra("departureCity", departure?.name)
+            putExtra("arrivalCity", arrival?.name)
+            putExtra("price", price)
+            putExtra("date", selectedDate)
+            putExtra("randomStop", randomAirport?.name)
+            putExtra("seatNumber", (1..150).shuffled().first().toString())  // Generating a random seat number
+        }
+        startActivity(intent)
     }
 }
