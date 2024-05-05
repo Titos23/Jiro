@@ -53,7 +53,7 @@ class MainActivity2 : AppCompatActivity() {
         listItems = parseXML() // Parsing XML data
         setupSpinners()
 
-        setCurrentDateOnView()
+        initializeDate() // Initialize date on start
         findViewById<TextView>(R.id.tvSelectDate).setOnClickListener {
             showDatePickerDialog()
         }
@@ -89,20 +89,29 @@ class MainActivity2 : AppCompatActivity() {
     private fun addFlightInfoView() {
         val inflater = LayoutInflater.from(this)
         layoutContainer.removeAllViews()  // Clear previous views
-        val view = inflater.inflate(R.layout.flight_info_section, layoutContainer, false)
+        val view1 = inflater.inflate(R.layout.flight_info_section, layoutContainer, false)
+        setupFlightInfoView(view1, false)
 
+        val view2 = inflater.inflate(R.layout.flight_info_section, layoutContainer, false)
+        setupFlightInfoView(view2, true)
+
+        layoutContainer.addView(view1)
+        layoutContainer.addView(view2)
+    }
+
+    private fun setupFlightInfoView(view: View, includeRandomAirport: Boolean) {
         view.findViewById<TextView>(R.id.textViewDepartureCity).text = selectedDeparture?.name ?: "Default Departure"
         view.findViewById<TextView>(R.id.textViewDepartureCode).text = selectedDeparture?.iataCode ?: "AAA"
         view.findViewById<TextView>(R.id.textViewArrivalCity).text = selectedArrival?.name ?: "Default Arrival"
         view.findViewById<TextView>(R.id.textViewArrivalCode).text = selectedArrival?.iataCode ?: "AMS"
-        view.findViewById<TextView>(R.id.textViewDate).text = "Flight Date: $selectedDate"
+        view.findViewById<TextView>(R.id.textViewDate).text = selectedDate
 
-        val randomAirport = getRandomAirport()
-        randomAirport?.let {
-            view.findViewById<TextView>(R.id.textViewDate).text = "${it.name}(${it.country})"
+        if (includeRandomAirport) {
+            val randomAirport = getRandomAirport()
+            randomAirport?.let {
+                view.findViewById<TextView>(R.id.textViewDate).text = "${it.name} (${it.country})"
+            }
         }
-
-        layoutContainer.addView(view)
     }
 
     private fun getRandomAirport(): Airport? {
@@ -157,9 +166,11 @@ class MainActivity2 : AppCompatActivity() {
         return items
     }
 
-    private fun setCurrentDateOnView() {
+    private fun initializeDate() {
+        // Set the initial date to the current date on load
         val currentDate = Calendar.getInstance()
-        val formatter = SimpleDateFormat("EEEE, dd MMMM yyyy", Locale.getDefault())
-        findViewById<TextView>(R.id.tvSelectDate).text = formatter.format(currentDate.time)
+        val dateFormatter = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+        selectedDate = dateFormatter.format(currentDate.time)
+        findViewById<TextView>(R.id.tvSelectDate).text = selectedDate
     }
 }
