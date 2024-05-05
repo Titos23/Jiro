@@ -3,16 +3,19 @@ package com.example.jiro
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.os.Bundle
-import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import android.content.res.XmlResourceParser
@@ -25,6 +28,9 @@ class MainActivity2 : AppCompatActivity() {
     private var selectedDeparture: Airport? = null
     private var selectedArrival: Airport? = null
     private lateinit var listItems: List<Airport>
+    private lateinit var layoutContainer: LinearLayout
+    private lateinit var selectedDate: String  // For formatted date in the flight info section
+    private lateinit var displayDate: String  // For display in TextView from DatePicker
 
     @SuppressLint("CutPasteId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,96 +43,84 @@ class MainActivity2 : AppCompatActivity() {
             insets
         }
 
+        layoutContainer = findViewById(R.id.flightContainer)
+        findViewById<Button>(R.id.searchFlight).setOnClickListener {
+            addFlightInfoView()
+        }
+
         departureSpinner = findViewById(R.id.departure)
         arrivalSpinner = findViewById(R.id.arrival)
         listItems = parseXML() // Parsing XML data
+        setupSpinners()
+
+        setCurrentDateOnView()
+        findViewById<TextView>(R.id.tvSelectDate).setOnClickListener {
+            showDatePickerDialog()
+        }
+    }
+
+    private fun setupSpinners() {
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, listItems)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         departureSpinner.adapter = adapter
         arrivalSpinner.adapter = adapter
 
-        setCurrentDateOnView()
-        val tvSelectDate = findViewById<TextView>(R.id.tvSelectDate)
-        tvSelectDate.setOnClickListener {
-            showDatePickerDialog()
-        }
-
-        val spinnerListener = object : AdapterView.OnItemSelectedListener {
+        departureSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                val selectedAirport = parent.adapter.getItem(position) as Airport
-                if (parent.id == R.id.departure) {
-                    selectedDeparture = selectedAirport
-                } else if (parent.id == R.id.arrival) {
-                    selectedArrival = selectedAirport
-                }
-                updateRandomAirports()
+                selectedDeparture = parent.getItemAtPosition(position) as Airport
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
-                if (parent.id == R.id.departure) {
-                    selectedDeparture = null
-                } else if (parent.id == R.id.arrival) {
-                    selectedArrival = null
-                }
-                updateRandomAirports()
+                selectedDeparture = null
             }
         }
 
-        departureSpinner.onItemSelectedListener = spinnerListener
-        arrivalSpinner.onItemSelectedListener = spinnerListener
+        arrivalSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                selectedArrival = parent.getItemAtPosition(position) as Airport
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                selectedArrival = null
+            }
+        }
     }
 
-    private fun updateRandomAirports() {
-        // Ensure both selections have been made to avoid premature random selections.
-        if (selectedDeparture == null || selectedArrival == null) {
-            return
+    private fun addFlightInfoView() {
+        val inflater = LayoutInflater.from(this)
+        layoutContainer.removeAllViews()  // Clear previous views
+        val view = inflater.inflate(R.layout.flight_info_section, layoutContainer, false)
+
+        view.findViewById<TextView>(R.id.textViewDepartureCity).text = selectedDeparture?.name ?: "Default Departure"
+        view.findViewById<TextView>(R.id.textViewDepartureCode).text = selectedDeparture?.iataCode ?: "AAA"
+        view.findViewById<TextView>(R.id.textViewArrivalCity).text = selectedArrival?.name ?: "Default Arrival"
+        view.findViewById<TextView>(R.id.textViewArrivalCode).text = selectedArrival?.iataCode ?: "AMS"
+        view.findViewById<TextView>(R.id.textViewDate).text = "Flight Date: $selectedDate"
+
+        val randomAirport = getRandomAirport()
+        randomAirport?.let {
+            view.findViewById<TextView>(R.id.textViewDate).text = "${it.name}(${it.country})"
         }
 
-        val excludedAirports = listOfNotNull(selectedDeparture, selectedArrival)
-        val availableAirports = listItems.filter { it !in excludedAirports }
-        val randomAirports = availableAirports.shuffled().take(3)
-        Log.d("RandomAirports", "Random Airports: ${randomAirports.joinToString { it.name }}")
+        layoutContainer.addView(view)
     }
 
-    private fun setCurrentDateOnView() {
-        val tvSelectDate = findViewById<TextView>(R.id.tvSelectDate)
-        val calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-        val dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault())
-        val currentDate = String.format("%s, %d/%d/%d", dayOfWeek, day, month + 1, year)
-
-        tvSelectDate.text = currentDate
+    private fun getRandomAirport(): Airport? {
+        val excludedAirports = listOfNotNull(selectedDeparture, selectedArrival)
+        return listItems.filterNot { it in excludedAirports }.shuffled().firstOrNull()
     }
 
     private fun showDatePickerDialog() {
         val calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-        val datePickerDialog = DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
-            // Set the calendar to the selected date
-            calendar.set(Calendar.YEAR, selectedYear)
-            calendar.set(Calendar.MONTH, selectedMonth)
-            calendar.set(Calendar.DAY_OF_MONTH, selectedDay)
-
-            // Retrieve the day of the week in a full textual format
-            val dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault())
-            // Format the date where the day of the week comes first
-            val selectedDate = String.format("%s, %d/%d/%d", dayOfWeek, selectedDay, selectedMonth + 1, selectedYear)
-
-            // Update the TextView with the selected date
-            findViewById<TextView>(R.id.tvSelectDate).text = selectedDate
-        }, year, month, day)
-
-        datePickerDialog.datePicker.minDate = calendar.timeInMillis
-        // Set maximum date to one year from today
-        calendar.add(Calendar.YEAR, 1)
-        datePickerDialog.datePicker.maxDate = calendar.timeInMillis
-
-        datePickerDialog.show()
+        DatePickerDialog(this, { _, year, month, dayOfMonth ->
+            val date = Calendar.getInstance()
+            date.set(year, month, dayOfMonth)
+            val dateFormatter = SimpleDateFormat("EEEE, dd MMMM yyyy", Locale.getDefault())
+            val dateFlightFormatter = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+            displayDate = dateFormatter.format(date.time)
+            selectedDate = dateFlightFormatter.format(date.time)
+            findViewById<TextView>(R.id.tvSelectDate).text = displayDate
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
     }
 
     private fun parseXML(): List<Airport> {
@@ -161,5 +155,11 @@ class MainActivity2 : AppCompatActivity() {
             parser.close()
         }
         return items
+    }
+
+    private fun setCurrentDateOnView() {
+        val currentDate = Calendar.getInstance()
+        val formatter = SimpleDateFormat("EEEE, dd MMMM yyyy", Locale.getDefault())
+        findViewById<TextView>(R.id.tvSelectDate).text = formatter.format(currentDate.time)
     }
 }
