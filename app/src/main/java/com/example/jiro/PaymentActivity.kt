@@ -1,4 +1,6 @@
 package com.example.jiro
+import com.example.jiro.Ticket
+
 
 import android.app.Activity
 import android.content.Intent
@@ -8,11 +10,13 @@ import android.text.TextWatcher
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class PaymentActivity : AppCompatActivity() {
 
     private lateinit var paymentButton: Button
+    private lateinit var dbHelper: DatabaseHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,19 +27,17 @@ class PaymentActivity : AppCompatActivity() {
 
         val button = findViewById<Button>(R.id.paymentButton)
         button.setOnClickListener {
-
-            val intent = Intent(this, FragmentActivity::class.java).apply {
-                putExtra("showTicketsFragment", true)
-                putExtra("passengerName", passengerNameEditText.text.toString())
-                putExtra("departureCity", findViewById<TextView>(R.id.flightDepartureCity).text.toString())
-                putExtra("arrivalCity", findViewById<TextView>(R.id.flightArrivalCity).text.toString())
-                putExtra("date", findViewById<TextView>(R.id.flightDate).text.toString())
-                putExtra("randomStop", findViewById<TextView>(R.id.randomStop).text.toString())
-                putExtra("seatNumber", findViewById<TextView>(R.id.seatNumber).text.toString())
-
-
-            }
-            setResult(Activity.RESULT_OK, intent)
+            dbHelper = DatabaseHelper(this)
+            val newTicket = Ticket(
+                passengerName = passengerNameEditText.text.toString(),
+                departureCity = findViewById<TextView>(R.id.flightDepartureCity).text.toString(),
+                arrivalCity = findViewById<TextView>(R.id.flightArrivalCity).text.toString(),
+                date = findViewById<TextView>(R.id.flightDate).text.toString(),
+                randomStop = findViewById<TextView>(R.id.randomStop).text.toString(),
+                seatNumber = findViewById<TextView>(R.id.seatNumber).text.toString()
+            )
+            val ticketId = dbHelper.addTicket(newTicket)
+            Toast.makeText(this, "Ticket added with ID: $ticketId", Toast.LENGTH_LONG).show()
             finish()
         }
 

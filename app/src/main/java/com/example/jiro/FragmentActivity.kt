@@ -13,25 +13,19 @@ class FragmentActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fragment)
+
+        // Initialize fragments and setup the BottomNavigationView
         setupFragments()
         setupBottomNavigationView()
-
-        // Determine which fragment to show based on the intent
-        if (intent.getBooleanExtra("showTicketsFragment", false)) {
-            switchFragment(ticketsFragment, "Tickets")
-        } else {
-            switchFragment(homeFragment, "Home")
-        }
     }
 
     private fun setupFragments() {
         homeFragment = HomeFragment.newInstance()
-        ticketsFragment = TicketFragment.newInstance("","","","","","")
-        // Add both fragments, but hide tickets fragment initially
+        ticketsFragment = TicketFragment.newInstance()
+
+        // Initially load the home fragment
         supportFragmentManager.beginTransaction()
             .add(R.id.fragment_container, homeFragment, "Home")
-            .add(R.id.fragment_container, ticketsFragment, "Tickets")
-            .hide(ticketsFragment)
             .commit()
         currentFragment = homeFragment
     }
