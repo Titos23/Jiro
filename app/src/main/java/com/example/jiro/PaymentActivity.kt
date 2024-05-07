@@ -1,13 +1,17 @@
 package com.example.jiro
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 class PaymentActivity : AppCompatActivity() {
+
+    private lateinit var paymentButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -15,6 +19,22 @@ class PaymentActivity : AppCompatActivity() {
 
         val passengerNameEditText = findViewById<EditText>(R.id.passengerNameInput)
         val passengerNameTextView = findViewById<TextView>(R.id.passengerName)
+
+        val button = findViewById<Button>(R.id.paymentButton)
+        button.setOnClickListener {
+
+            val intent = Intent(this, TicketActivity::class.java).apply {
+                putExtra("passengerName", passengerNameEditText.text.toString())
+                putExtra("departureCity", findViewById<TextView>(R.id.flightDepartureCity).text.toString())
+                putExtra("arrivalCity", findViewById<TextView>(R.id.flightArrivalCity).text.toString())
+                putExtra("date", findViewById<TextView>(R.id.flightDate).text.toString())
+                putExtra("randomStop", findViewById<TextView>(R.id.randomStop).text.toString())
+                putExtra("seatNumber", findViewById<TextView>(R.id.seatNumber).text.toString())
+            }
+            startActivity(intent)
+        }
+
+
 
         // Initializing TextViews with data received via Intent
         val departureCity = intent.getStringExtra("departureCity") ?: "Not Provided"
@@ -46,4 +66,5 @@ class PaymentActivity : AppCompatActivity() {
             }
         })
     }
+
 }

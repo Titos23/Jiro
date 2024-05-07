@@ -113,7 +113,7 @@
 
         <!-- Proceed to Payment Button -->
         <Button
-            android:id="@+id/proceedToPaymentButton"
+            android:id="@+id/paymentButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Proceed to Payment"
