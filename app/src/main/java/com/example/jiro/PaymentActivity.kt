@@ -1,5 +1,6 @@
 package com.example.jiro
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -24,19 +25,24 @@ class PaymentActivity : AppCompatActivity() {
         button.setOnClickListener {
 
             val intent = Intent(this, FragmentActivity::class.java).apply {
+                putExtra("showTicketsFragment", true)
                 putExtra("passengerName", passengerNameEditText.text.toString())
                 putExtra("departureCity", findViewById<TextView>(R.id.flightDepartureCity).text.toString())
                 putExtra("arrivalCity", findViewById<TextView>(R.id.flightArrivalCity).text.toString())
                 putExtra("date", findViewById<TextView>(R.id.flightDate).text.toString())
                 putExtra("randomStop", findViewById<TextView>(R.id.randomStop).text.toString())
                 putExtra("seatNumber", findViewById<TextView>(R.id.seatNumber).text.toString())
+
+
             }
-            startActivity(intent)
+            setResult(Activity.RESULT_OK, intent)
+            finish()
         }
 
 
 
         // Initializing TextViews with data received via Intent
+
         val departureCity = intent.getStringExtra("departureCity") ?: "Not Provided"
         val arrivalCity = intent.getStringExtra("arrivalCity") ?: "Not Provided"
         val price = intent.getIntExtra("price", 0)
