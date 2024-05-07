@@ -26,7 +26,7 @@ class LoginActivity : AppCompatActivity() {
         signUpTextView = findViewById(R.id.signUpTextView)
 
         connectButton.setOnClickListener {
-            val intent = Intent(this, MainActivity2::class.java)
+            val intent = Intent(this, FragmentActivity::class.java)
             startActivity(intent)
         }
 

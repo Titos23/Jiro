@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 class SignupActivity : AppCompatActivity() {
@@ -24,7 +23,7 @@ class SignupActivity : AppCompatActivity() {
 
 
         submitButton.setOnClickListener {
-            val intent = Intent(this, MainActivity2::class.java)
+            val intent = Intent(this, FragmentActivity::class.java)
             startActivity(intent)
         }
 

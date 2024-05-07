@@ -23,7 +23,7 @@ class PaymentActivity : AppCompatActivity() {
         val button = findViewById<Button>(R.id.paymentButton)
         button.setOnClickListener {
 
-            val intent = Intent(this, TicketActivity::class.java).apply {
+            val intent = Intent(this, FragmentActivity::class.java).apply {
                 putExtra("passengerName", passengerNameEditText.text.toString())
                 putExtra("departureCity", findViewById<TextView>(R.id.flightDepartureCity).text.toString())
                 putExtra("arrivalCity", findViewById<TextView>(R.id.flightArrivalCity).text.toString())

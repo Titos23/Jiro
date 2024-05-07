@@ -13,11 +13,14 @@
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
         <activity
-            android:name=".TicketActivity"
+            android:name=".TicketFragment"
             android:launchMode="singleTop"
             android:exported="false" />
         <activity
             android:name=".PaymentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".HomeFragment"
             android:exported="false" />
         <activity
             android:name=".SignupActivity"
@@ -27,7 +30,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".MainActivity2"
+            android:name=".FragmentActivity"
             android:launchMode="singleTop"
             android:exported="false"
             android:theme="@style/Theme.MyApplication1" />
