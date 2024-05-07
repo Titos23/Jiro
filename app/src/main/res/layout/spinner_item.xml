@@ -1,4 +1,4 @@
-<!-- res/layout/spinner_item.xml -->
+<!-- menu/layout/spinner_item.xml -->
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/text_view_spinner_item"
     android:layout_width="match_parent"

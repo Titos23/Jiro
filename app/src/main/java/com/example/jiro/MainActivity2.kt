@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import android.content.res.XmlResourceParser
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.xmlpull.v1.XmlPullParser
 
 class MainActivity2 : AppCompatActivity() {
@@ -41,6 +42,22 @@ class MainActivity2 : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNavigationView.selectedItemId = R.id.navigation_home
+
+        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.navigation_home -> true // Already here
+                R.id.navigation_tickets -> {
+                    val intent = Intent(this, TicketActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+                    startActivity(intent)
+                    true
+                }
+                else -> false
+            }
         }
 
         layoutContainer = findViewById(R.id.flightContainer)
