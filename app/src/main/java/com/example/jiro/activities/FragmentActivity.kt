@@ -1,9 +1,10 @@
-package com.example.jiro
+package com.example.jiro.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.fragment.app.Fragment
+import com.example.jiro.R
 
 class FragmentActivity : AppCompatActivity() {
     private lateinit var homeFragment: HomeFragment

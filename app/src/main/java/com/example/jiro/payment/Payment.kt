@@ -1,7 +1,7 @@
 // src/main/java/com/example/jiro/payment/Payment.kt
 package com.example.jiro.payment
 
-import com.example.jiro.Customer
+import com.example.jiro.generic.Customer
 
 class Payment(
     private val customer: Customer,

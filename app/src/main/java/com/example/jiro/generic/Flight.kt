@@ -1,4 +1,4 @@
-package com.example.jiro
+package com.example.jiro.generic
 import android.content.Context
 
 class Flight(

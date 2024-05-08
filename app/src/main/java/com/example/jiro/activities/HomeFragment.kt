@@ -1,4 +1,4 @@
-package com.example.jiro
+package com.example.jiro.activities
 
 import android.app.DatePickerDialog
 import android.content.Intent
@@ -18,6 +18,9 @@ import java.util.Locale
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.example.jiro.generic.Airport
+import com.example.jiro.generic.Flight
+import com.example.jiro.R
 
 class HomeFragment : Fragment() {
 
@@ -50,7 +53,7 @@ class HomeFragment : Fragment() {
 
         departureSpinner = view.findViewById(R.id.departure)
         arrivalSpinner = view.findViewById(R.id.arrival)
-        listItems =  Airport.getAirports(requireContext()) // Parsing XML data
+        listItems = Airport.getAirports(requireContext()) // Parsing XML data
         setupSpinners()
 
         initializeDate(view) // Initialize date on start
@@ -89,7 +92,8 @@ class HomeFragment : Fragment() {
         layoutContainer.removeAllViews()
         selectedDeparture?.let { departure ->
             selectedArrival?.let { arrival ->
-                val flights = Flight.searchFlights(requireContext(), departure, arrival, selectedDate)
+                val flights =
+                    Flight.searchFlights(requireContext(), departure, arrival, selectedDate)
                 flights.forEach { flight ->
                     addFlightDetailsView(false, flight.price.toInt())
                     addFlightDetailsView(true, flight.price.toInt())
@@ -112,12 +116,21 @@ class HomeFragment : Fragment() {
         val safeSelectedArrival = selectedArrival
 
         if (safeSelectedDeparture != null && safeSelectedArrival != null) {
-            val flight = Flight.searchFlights(requireContext(), safeSelectedDeparture, safeSelectedArrival, selectedDate).firstOrNull()
+            val flight = Flight.searchFlights(
+                requireContext(),
+                safeSelectedDeparture,
+                safeSelectedArrival,
+                selectedDate
+            ).firstOrNull()
             flight?.let {
-                view.findViewById<TextView>(R.id.textViewDepartureCity).text = Airport.getAiportName(safeSelectedDeparture)
-                view.findViewById<TextView>(R.id.textViewDepartureCode).text = Airport.getAiportCode(safeSelectedDeparture)
-                view.findViewById<TextView>(R.id.textViewArrivalCity).text = Airport.getAiportName(safeSelectedArrival)
-                view.findViewById<TextView>(R.id.textViewArrivalCode).text = Airport.getAiportCode(safeSelectedArrival)
+                view.findViewById<TextView>(R.id.textViewDepartureCity).text =
+                    Airport.getAiportName(safeSelectedDeparture)
+                view.findViewById<TextView>(R.id.textViewDepartureCode).text =
+                    Airport.getAiportCode(safeSelectedDeparture)
+                view.findViewById<TextView>(R.id.textViewArrivalCity).text =
+                    Airport.getAiportName(safeSelectedArrival)
+                view.findViewById<TextView>(R.id.textViewArrivalCode).text =
+                    Airport.getAiportCode(safeSelectedArrival)
                 view.findViewById<TextView>(R.id.textViewDate).text = selectedDate
                 view.findViewById<TextView>(R.id.textViewPrice).text = "Price: $${it.price}"
             }
@@ -125,9 +138,14 @@ class HomeFragment : Fragment() {
             // Handle random airport inclusion if needed
             var randomAirport: Airport? = null
             if (includeRandomAirport) {
-                randomAirport = Airport.getRandomAirport(requireContext(), safeSelectedDeparture, safeSelectedArrival)
+                randomAirport = Airport.getRandomAirport(
+                    requireContext(),
+                    safeSelectedDeparture,
+                    safeSelectedArrival
+                )
                 randomAirport?.let {
-                    view.findViewById<TextView>(R.id.textViewDate).text = Airport.getAiportName(randomAirport)
+                    view.findViewById<TextView>(R.id.textViewDate).text =
+                        Airport.getAiportName(randomAirport)
                 }
             }
 

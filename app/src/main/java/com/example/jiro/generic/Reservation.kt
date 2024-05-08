@@ -1,9 +1,8 @@
-package com.example.jiro
+package com.example.jiro.generic
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import java.util.UUID
 import android.content.ContentValues
 
 class ReservationHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {

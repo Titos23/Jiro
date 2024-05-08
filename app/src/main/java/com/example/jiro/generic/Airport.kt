@@ -1,7 +1,8 @@
-package com.example.jiro
+package com.example.jiro.generic
 
 import android.content.Context
 import android.util.Log
+import com.example.jiro.R
 import org.xmlpull.v1.XmlPullParser
 
 class Airport(val name: String, val iataCode: String, val country: String) {

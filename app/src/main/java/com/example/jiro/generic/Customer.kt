@@ -1,4 +1,4 @@
-package com.example.jiro
+package com.example.jiro.generic
 
 class Customer (
     private val cardHolderName: String,

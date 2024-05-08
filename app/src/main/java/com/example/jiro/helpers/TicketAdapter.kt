@@ -1,4 +1,4 @@
-package com.example.jiro.adapters
+package com.example.jiro.helpers
 
 
 import android.view.LayoutInflater
@@ -8,7 +8,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.jiro.R
-import com.example.jiro.Ticket
+import com.example.jiro.generic.Ticket
 
 
 class TicketAdapter(private var tickets: MutableList<Ticket>, private val onDelete: (Ticket) -> Unit) : RecyclerView.Adapter<TicketAdapter.TicketViewHolder>() {

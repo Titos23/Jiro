@@ -1,14 +1,16 @@
-package com.example.jiro
+package com.example.jiro.activities
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.jiro.adapters.TicketAdapter
+import com.example.jiro.R
+import com.example.jiro.generic.ReservationHelper
+import com.example.jiro.generic.Ticket
+import com.example.jiro.helpers.TicketAdapter
 
 
 class TicketFragment : Fragment() {

@@ -13,29 +13,29 @@
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
         <activity
-            android:name=".TicketFragment"
+            android:name=".activities.TicketFragment"
             android:launchMode="singleTop"
             android:exported="false" />
         <activity
-            android:name=".PaymentActivity"
+            android:name=".activities.PaymentActivity"
             android:exported="false" />
         <activity
-            android:name=".HomeFragment"
+            android:name=".activities.HomeFragment"
             android:exported="false" />
         <activity
-            android:name=".SignupActivity"
+            android:name=".activities.SignupActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".activities.LoginActivity"
             android:exported="false" />
 
         <activity
-            android:name=".FragmentActivity"
+            android:name=".activities.FragmentActivity"
             android:launchMode="singleTop"
             android:exported="false"
             android:theme="@style/Theme.MyApplication1" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.MyApplication">
             <intent-filter>
