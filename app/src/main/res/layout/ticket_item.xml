@@ -1,51 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:padding="16dp">
 
-    <TextView
-        android:id="@+id/tvPassengerName"
+    <LinearLayout
+        android:id="@+id/text_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Passenger Name"
-        android:textSize="18sp"
-        android:textStyle="bold"/>
+        android:orientation="vertical"
+        android:layout_toLeftOf="@+id/btnDelete"
+        android:layout_alignParentLeft="true">
 
-    <TextView
-        android:id="@+id/tvDepartureCity"
-        android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tvPassengerName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Passenger Name"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tvDepartureCity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Departure City"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/tvArrivalCity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Arrival City"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Date"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/tvRandomStop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Random Stop"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/tvSeatNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Seat Number"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnDelete"
+        android:backgroundTint="#005C5F"
+        android:textColor="@android:color/white"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Departure City"
-        android:textSize="16sp"/>
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:text="Delete"/>
 
-    <TextView
-        android:id="@+id/tvArrivalCity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Arrival City"
-        android:textSize="16sp"/>
-
-    <TextView
-        android:id="@+id/tvDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Date"
-        android:textSize="16sp"/>
-
-    <TextView
-        android:id="@+id/tvRandomStop"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Random Stop"
-        android:textSize="16sp"/>
-
-    <TextView
-        android:id="@+id/tvSeatNumber"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Seat Number"
-        android:textSize="16sp"/>
-
-</LinearLayout>
+</RelativeLayout>

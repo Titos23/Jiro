@@ -1,12 +1,22 @@
 package com.example.jiro
+import android.content.Context
 
 class Flight(
-    override val origin: String,
-    override val destination: String,
-    val flightNumber: String,
-    var duration: Double
-) : Travel() {
-    override fun displayInfo() {
-        println("Flight Number: $flightNumber, from $origin to $destination, duration: $duration hours.")
+    val departure: Airport,
+    val arrival: Airport,
+    val departureAirportCode: String,
+    val arrivalAirportCode: String,
+    val flightDate: String,
+
+    val price: String,
+    val flightTime: String
+) {
+    companion object {
+        fun searchFlights(context: Context, departure: Airport, arrival: Airport, date:String): List<Flight> {
+            return listOf(
+                Flight(departure, arrival, Airport.getAiportCode(departure), Airport.getAiportCode(arrival), date,"1500","6h45"),
+                Flight(departure, arrival, Airport.getAiportCode(departure), Airport.getAiportCode(arrival), date, "700","6h30"),
+            )
+        }
     }
 }

@@ -1,7 +1,9 @@
 package com.example.jiro
 
+import java.util.UUID
+
 data class Ticket(
-    val id: String? = null,  // UUID as String
+    val id: String = UUID.randomUUID().toString(),
     val passengerName: String,
     val departureCity: String,
     val arrivalCity: String,

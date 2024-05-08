@@ -1,15 +1,8 @@
 package com.example.jiro
+/*
+import com.example.jiro.Ticket
 
 
-
-import android.view.View
-
-
-
-import android.widget.LinearLayout
-
-import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -21,15 +14,15 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
-
 class PaymentActivity : AppCompatActivity() {
+
     private lateinit var paymentButton: Button
     private lateinit var reservationHelper: ReservationHelper
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_payment)
+
         val passengerNameEditText = findViewById<EditText>(R.id.passengerNameInput)
         val passengerNameTextView = findViewById<TextView>(R.id.passengerName)
 
@@ -48,6 +41,11 @@ class PaymentActivity : AppCompatActivity() {
             Toast.makeText(this, "Ticket added with ID: $ticketId", Toast.LENGTH_LONG).show()
             finish()
         }
+
+
+
+        // Initializing TextViews with data received via Intent
+
         val departureCity = intent.getStringExtra("departureCity") ?: "Not Provided"
         val arrivalCity = intent.getStringExtra("arrivalCity") ?: "Not Provided"
         val price = intent.getIntExtra("price", 0)
@@ -76,31 +74,27 @@ class PaymentActivity : AppCompatActivity() {
                 // This method can be empty
             }
         })
-        // UI references
-        val chipGroup: ChipGroup = findViewById(R.id.chipGroupPaymentMethod)
-        val creditCardLayout: LinearLayout = findViewById(R.id.creditCardLayout)
-        val debitCardLayout: LinearLayout = findViewById(R.id.debitCardLayout)
-        val paymentButton: Button = findViewById(R.id.paymentButton)
-
-        // Initially hide all payment specific details
-        creditCardLayout.visibility = View.GONE
-        debitCardLayout.visibility = View.GONE
-
-        // Chip selection listener
-        chipGroup.setOnCheckedChangeListener { group, checkedId ->
-            when (checkedId) {
-                R.id.chipCreditCard -> {
-                    creditCardLayout.visibility = View.VISIBLE
-                    debitCardLayout.visibility = View.GONE
-                }
-                R.id.chipDebitCard -> {
-                    debitCardLayout.visibility = View.VISIBLE
-                    creditCardLayout.visibility = View.GONE
-                }
-            }
-        }
-
-
     }
 
 }
+    paymentButton.setOnClickListener {
+            if (findViewById<Chip>(R.id.chipCreditCard).isChecked) {
+                handleCreditCardPayment()
+            } else if (findViewById<Chip>(R.id.chipDebitCard).isChecked) {
+                handlePayPalPayment()
+            } else {
+                Toast.makeText(this, "Please select a payment method", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun handleCreditCardPayment() {
+        // Logic to handle credit card payment
+        Toast.makeText(this, "Processing credit card payment...", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun handlePayPalPayment() {
+        // Logic to handle PayPal payment
+        Toast.makeText(this, "Processing PayPal payment...", Toast.LENGTH_SHORT).show()
+    }
+*/

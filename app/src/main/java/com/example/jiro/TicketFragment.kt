@@ -11,35 +11,44 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.jiro.adapters.TicketAdapter
 
 
-
 class TicketFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var ticketAdapter: TicketAdapter
-    private lateinit var dbHelper: DatabaseHelper
+    private lateinit var reservationHelper: ReservationHelper
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_ticket, container, false)
+        reservationHelper = ReservationHelper(view.context)
 
-        // Initialize database helper
-        dbHelper = DatabaseHelper(view.context)
-
-        // Setup RecyclerView
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(view.context)
-        loadTickets()
+        setupAdapter()
 
         return view
     }
 
-    private fun loadTickets() {
-        val tickets = dbHelper.getAllTickets()
-        ticketAdapter = TicketAdapter(tickets)
+    override fun onResume() {
+        super.onResume()
+        refreshTickets()
+    }
+
+    private fun setupAdapter() {
+        val tickets = reservationHelper.getAllTickets().toMutableList()
+        ticketAdapter = TicketAdapter(tickets) { ticket ->
+            deleteTicket(ticket)
+        }
         recyclerView.adapter = ticketAdapter
+    }
+
+    private fun refreshTickets() {
+        val newTickets = reservationHelper.getAllTickets()
+        ticketAdapter.updateTickets(newTickets)
+    }
+
+    private fun deleteTicket(ticket: Ticket) {
+        reservationHelper.deleteTicket(ticket.id)
+        ticketAdapter.removeTicket(ticket)
     }
 
     companion object {

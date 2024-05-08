@@ -1,15 +1,31 @@
 package com.example.jiro
 
-class Customer(val name: String, val email: String) {
-    private val bookingHistory = mutableListOf<Reservation>()
+class Customer (
+    private val cardHolderName: String,
+    private val cardNumber: String,
+    private val expiryDate: String,
+    private val cvv: String,
+    private val email: String,
+    private val password: String
+){
 
-    fun addReservation(reservation: Reservation) {
-        bookingHistory.add(reservation)
+
+    fun getCardNumber() : String{
+        return cardNumber
     }
 
-    fun getBookingHistory() {
-        bookingHistory.forEach { res ->
-            println("Reservation for ${res.flight.destination} on ${res.flight.flightNumber}. Status: ${res.status}")
-        }
+    fun getExpiryDate() : String{
+        return expiryDate
     }
+
+    fun getCvv() : String{
+        return cvv
+    }
+
+    fun getCardHolderName() : String{
+        return cardNumber
+    }
+
+
+
 }
