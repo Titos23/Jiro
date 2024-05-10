@@ -28,7 +28,7 @@ class PaymentActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_payment)
 
-        paymentProcessor = PaymentProcessor()
+        paymentProcessor = PaymentProcessor(this)
         paymentProcessor.addObserver(PaymentStatusLogger())
 
         val passengerNameEditText = findViewById<EditText>(R.id.passengerNameInput)

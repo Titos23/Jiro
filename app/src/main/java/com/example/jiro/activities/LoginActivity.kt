@@ -29,9 +29,8 @@ class LoginActivity : AppCompatActivity() {
         signUpTextView = findViewById(R.id.signUpTextView)
 
         connectButton.setOnClickListener {
-            val intent = Intent(this, FragmentActivity::class.java)
             loginUser(emailEditText.text.toString(), passwordEditText.text.toString())
-            startActivity(intent)
+
         }
 
         clearButton.setOnClickListener {
@@ -50,7 +49,7 @@ class LoginActivity : AppCompatActivity() {
         val dbHelper = ConnectionHelper(this)
         if (dbHelper.checkUser(username, password)) {
             Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show()
-            startActivity(Intent(this, MainActivity::class.java))
+            startActivity(Intent(this, FragmentActivity::class.java))
             finish()
         } else {
             Toast.makeText(this, "Login failed. Invalid username or password", Toast.LENGTH_SHORT).show()

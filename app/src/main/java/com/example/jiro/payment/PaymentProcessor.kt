@@ -1,14 +1,17 @@
 package com.example.jiro.payment
 
+import android.content.Context
+
 interface PaymentObserver {
     fun update(paymentSuccessful: Boolean)
 }
 
-class PaymentProcessor {
+class PaymentProcessor(context: Context) {
+    private val paymentFactory = PaymentFactory(context)
     private val observers = mutableListOf<PaymentObserver>()
 
     fun processPayment(methodType: String, amount: Double): Boolean {
-        val paymentMethod = PaymentFactory().getPaymentMethod(methodType)
+        val paymentMethod = paymentFactory.getPaymentMethod(methodType)
         val result = paymentMethod.pay(amount)
         notifyObservers(result)
         return result
@@ -24,6 +27,7 @@ class PaymentProcessor {
         }
     }
 }
+
 
 class PaymentStatusLogger : PaymentObserver {
     override fun update(paymentSuccessful: Boolean) {

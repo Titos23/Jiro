@@ -27,8 +27,6 @@ class SignupActivity : AppCompatActivity() {
 
         submitButton.setOnClickListener {
             registerUser(signemailEditText.text.toString(), signpasswordEditText.text.toString())
-            val intent = Intent(this, FragmentActivity::class.java)
-            startActivity(intent)
         }
 
     }
@@ -36,6 +34,7 @@ class SignupActivity : AppCompatActivity() {
     fun registerUser(username: String, password: String): Boolean {
         val dbHelper = ConnectionHelper(this)
         if (dbHelper.addUser(username, password)) {
+            startActivity(Intent(this, FragmentActivity::class.java))
             Toast.makeText(this, "User registered successfully!", Toast.LENGTH_SHORT).show()
             return true
         } else {
