@@ -1,13 +1,7 @@
 package com.example.jiro.activities
-
-
-
+import com.example.jiro.payment.PaymentProcessor
 import android.view.View
-
-
-
 import android.widget.LinearLayout
-
 import com.google.android.material.chip.ChipGroup
 import android.os.Bundle
 import android.text.Editable
@@ -20,16 +14,23 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.jiro.R
 import com.example.jiro.generic.ReservationHelper
 import com.example.jiro.generic.Ticket
+import com.example.jiro.payment.PaymentStatusLogger
 
 
 class PaymentActivity : AppCompatActivity() {
     private lateinit var paymentButton: Button
     private lateinit var reservationHelper: ReservationHelper
+    private lateinit var paymentProcessor: PaymentProcessor
+    private lateinit var paymentMethod: String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_payment)
+
+        paymentProcessor = PaymentProcessor()
+        paymentProcessor.addObserver(PaymentStatusLogger())
+
         val passengerNameEditText = findViewById<EditText>(R.id.passengerNameInput)
         val passengerNameTextView = findViewById<TextView>(R.id.passengerName)
 
@@ -46,6 +47,7 @@ class PaymentActivity : AppCompatActivity() {
             )
             val ticketId = reservationHelper.addTicket(newTicket)
             Toast.makeText(this, "Ticket added with ID: $ticketId", Toast.LENGTH_LONG).show()
+            paymentProcessor.processPayment(paymentMethod,500.00)
             finish()
         }
         val departureCity = intent.getStringExtra("departureCity") ?: "Not Provided"
@@ -92,10 +94,13 @@ class PaymentActivity : AppCompatActivity() {
                 R.id.chipCreditCard -> {
                     creditCardLayout.visibility = View.VISIBLE
                     debitCardLayout.visibility = View.GONE
+                    paymentMethod = "CreditCard"
+
                 }
                 R.id.chipDebitCard -> {
                     debitCardLayout.visibility = View.VISIBLE
                     creditCardLayout.visibility = View.GONE
+                    paymentMethod = "DebitCard"
                 }
             }
         }
