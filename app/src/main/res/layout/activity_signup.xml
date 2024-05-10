@@ -69,10 +69,6 @@
             android:backgroundTint="#005C5F"
             android:text="Submit" />
 
-
-
-
-
     </LinearLayout>
 </ScrollView>
 
