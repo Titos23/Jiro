@@ -4,8 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.jiro.R
+import com.example.jiro.helpers.ConnectionHelper
 
 class SignupActivity : AppCompatActivity() {
 
@@ -24,9 +26,21 @@ class SignupActivity : AppCompatActivity() {
 
 
         submitButton.setOnClickListener {
+            registerUser(signemailEditText.text.toString(), signpasswordEditText.text.toString())
             val intent = Intent(this, FragmentActivity::class.java)
             startActivity(intent)
         }
 
+    }
+
+    fun registerUser(username: String, password: String): Boolean {
+        val dbHelper = ConnectionHelper(this)
+        if (dbHelper.addUser(username, password)) {
+            Toast.makeText(this, "User registered successfully!", Toast.LENGTH_SHORT).show()
+            return true
+        } else {
+            Toast.makeText(this, "Registration failed or user already exists", Toast.LENGTH_SHORT).show()
+            return false
+        }
     }
 }

@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.jiro.R
+import com.example.jiro.helpers.ConnectionHelper
 
 class LoginActivity : AppCompatActivity() {
 
@@ -28,6 +30,7 @@ class LoginActivity : AppCompatActivity() {
 
         connectButton.setOnClickListener {
             val intent = Intent(this, FragmentActivity::class.java)
+            loginUser(emailEditText.text.toString(), passwordEditText.text.toString())
             startActivity(intent)
         }
 
@@ -42,4 +45,18 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
+
+    private fun loginUser(username: String, password: String) {
+        val dbHelper = ConnectionHelper(this)
+        if (dbHelper.checkUser(username, password)) {
+            Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        } else {
+            Toast.makeText(this, "Login failed. Invalid username or password", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+
 }
